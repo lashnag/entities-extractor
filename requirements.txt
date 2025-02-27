@@ -1,0 +1,5 @@
+fastapi==0.89.1
+pydantic==1.10.21
+dateparser==1.2.1
+spacy==3.8.2
+python-logstash-async==4.0.1
