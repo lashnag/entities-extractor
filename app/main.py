@@ -25,5 +25,9 @@ async def extract(request: Request):
         logging.getLogger().error(f"Common error: {error}", exc_info=True)
         raise HTTPException(status_code=500, detail="Произошла ошибка при получении обьектов из сообщения")
 
+@server.get("/healthcheck")
+async def healthcheck():
+    return {"status": "ok"}
+
 def contains_russian(text):
     return bool(re.search('[а-яА-Я]', text))
