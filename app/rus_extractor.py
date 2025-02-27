@@ -33,7 +33,7 @@ def extract_entities(message):
                 date_intervals.append(f"{current_year}-{month:02d}-01|{current_year}-{month:02d}-{last_day}")
 
         elif isinstance(referent, MoneyReferent):
-            sums.append(round(referent.value))
+            sums.append(str(round(referent.value)))
         elif isinstance(referent, DateRangeReferent):
             start_date = referent.slots[0].value
             start_day = start_date.day
