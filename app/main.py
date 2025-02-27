@@ -17,9 +17,13 @@ async def extract(request: Request):
         body = await request.json()
         message = body.get("message")
         if contains_russian(message):
-            return JSONResponse(content=rus_extractor.extract_entities(message))
+            extracted_entities = rus_extractor.extract_entities(message)
         else:
-            return JSONResponse(content=eng_extractor.extract_entities(message))
+            extracted_entities = eng_extractor.extract_entities(message)
+
+        response_content = {"entities": extracted_entities}
+
+        return JSONResponse(content=response_content)
 
     except Exception as error:
         logging.getLogger().error(f"Common error: {error}", exc_info=True)
