@@ -9,6 +9,6 @@ def extract_money(text):
         cleaned_value = money_value.replace(" ", "").replace(".", "").replace(",", "")
 
         if not (len(cleaned_value) == 4 and cleaned_value.startswith("20")):
-            cleaned_money_values.append(cleaned_value)
+            cleaned_money_values.append(int(cleaned_value))
 
     return cleaned_money_values

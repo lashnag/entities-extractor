@@ -26,14 +26,20 @@ def extract_entities(message):
                 dates.append(f"{current_year}-{month:02d}-{day:02d}")
             elif month != 0 and year != 0:
                 last_day = calendar.monthrange(year, month)[1]
-                date_intervals.append(f"{year}-{month:02d}-01|{year}-{month:02d}-{last_day}")
+                date_intervals.append({
+                    "first": f"{year}-{month:02d}-01",
+                    "second": f"{year}-{month:02d}-{last_day}"
+                })
             elif month != 0:
                 current_year = datetime.now().year
                 last_day = calendar.monthrange(current_year, month)[1]
-                date_intervals.append(f"{current_year}-{month:02d}-01|{current_year}-{month:02d}-{last_day}")
+                date_intervals.append({
+                    "first": f"{current_year}-{month:02d}-01",
+                    "second": f"{current_year}-{month:02d}-{last_day}"
+                })
 
         elif isinstance(referent, MoneyReferent):
-            sums.append(str(round(referent.value)))
+            sums.append(round(referent.value))
         elif isinstance(referent, DateRangeReferent):
             start_date = referent.slots[0].value
             start_day = start_date.day
@@ -60,7 +66,11 @@ def extract_entities(message):
                 end_date_str = f"{current_year}-{end_month:02d}-{end_day:02d}"
             else:
                 continue
-            date_intervals.append(f"{start_date_str}|{end_date_str}")
+
+            date_intervals.append({
+                "first": f"{start_date_str}",
+                "second": f"{end_date_str}"
+            })
 
     return {
         'dates': dates,
