@@ -26,7 +26,7 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: |
-            your-dockerhub-username/your-repo-name
+            lashnag/entities-extractor
           tags: |
             type=ref,event=branch
             type=ref,event=tag
