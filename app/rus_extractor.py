@@ -2,6 +2,7 @@ import calendar
 from datetime import datetime
 from pullenti_wrapper.processor import Processor, DATE, MONEY
 from pullenti_wrapper.referent import DateReferent, MoneyReferent, DateRangeReferent
+from dateutil.relativedelta import relativedelta
 
 processor = Processor([DATE, MONEY])
 
@@ -41,31 +42,37 @@ def extract_entities(message):
         elif isinstance(referent, MoneyReferent):
             sums.append(round(referent.value))
         elif isinstance(referent, DateRangeReferent):
-            start_date = referent.slots[0].value
-            start_day = start_date.day
-            start_month = start_date.month
-            start_year = start_date.year
+            if len(referent.slots) >= 1:
+                start_date = referent.slots[0].value
+                start_day = start_date.day
+                start_month = start_date.month
+                start_year = start_date.year
 
-            if start_day != 0 and start_month != 0 and start_year != 0:
-                start_date_str = f"{start_year}-{start_month:02d}-{start_day:02d}"
-            elif start_day != 0 and start_month != 0:
-                current_year = datetime.now().year
-                start_date_str = f"{current_year}-{start_month:02d}-{start_day:02d}"
+                if start_day != 0 and start_month != 0 and start_year != 0:
+                    start_date_str = f"{start_year}-{start_month:02d}-{start_day:02d}"
+                elif start_day != 0 and start_month != 0:
+                    current_year = datetime.now().year
+                    start_date_str = f"{current_year}-{start_month:02d}-{start_day:02d}"
+                else:
+                    continue
             else:
-                continue
+                start_date_str = datetime.now().strftime("%Y-%m-%d")
 
-            end_date = referent.slots[1].value
-            end_day = end_date.day
-            end_month = end_date.month
-            end_year = end_date.year
+            if len(referent.slots) >= 2:
+                end_date = referent.slots[1].value
+                end_day = end_date.day
+                end_month = end_date.month
+                end_year = end_date.year
 
-            if end_day != 0 and end_month != 0 and end_year != 0:
-                end_date_str = f"{end_year}-{end_month:02d}-{end_day:02d}"
-            elif end_day != 0 and end_month != 0:
-                current_year = datetime.now().year
-                end_date_str = f"{current_year}-{end_month:02d}-{end_day:02d}"
+                if end_day != 0 and end_month != 0 and end_year != 0:
+                    end_date_str = f"{end_year}-{end_month:02d}-{end_day:02d}"
+                elif end_day != 0 and end_month != 0:
+                    current_year = datetime.now().year
+                    end_date_str = f"{current_year}-{end_month:02d}-{end_day:02d}"
+                else:
+                    continue
             else:
-                continue
+                end_date_str = (datetime.now() + relativedelta(years=1)).strftime("%Y-%m-%d")
 
             date_intervals.append({
                 "first": f"{start_date_str}",
