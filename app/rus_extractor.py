@@ -42,7 +42,7 @@ def extract_entities(message):
         elif isinstance(referent, MoneyReferent):
             sums.append(round(referent.value))
         elif isinstance(referent, DateRangeReferent):
-            if len(referent.slots) >= 1:
+            if len(referent.slots) >= 1 and referent.slots[0].value is not None:
                 start_date = referent.slots[0].value
                 start_day = start_date.day
                 start_month = start_date.month
@@ -58,7 +58,7 @@ def extract_entities(message):
             else:
                 start_date_str = datetime.now().strftime("%Y-%m-%d")
 
-            if len(referent.slots) >= 2:
+            if len(referent.slots) >= 2 and referent.slots[1].value is not None:
                 end_date = referent.slots[1].value
                 end_day = end_date.day
                 end_month = end_date.month
