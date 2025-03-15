@@ -6,7 +6,8 @@ def extract_entities(message):
     dates = []
     for string_date in extract_dates(message):
         parsed_date = dateparser.parse(string_date, languages=['en'])
-        dates.append(f"{parsed_date.year}-{parsed_date.month:02d}-{parsed_date.day:02d}")
+        if parsed_date:
+            dates.append(f"{parsed_date.year}-{parsed_date.month:02d}-{parsed_date.day:02d}")
 
     return {
         'dates': dates,
