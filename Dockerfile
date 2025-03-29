@@ -1,6 +1,8 @@
-FROM python:3.11-slim AS builder
+FROM python:3.11-slim
 
-# Install build dependencies
+WORKDIR /entities_extractor
+
+# Установка необходимых системных зависимостей
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -9,33 +11,18 @@ RUN apt-get update && \
     g++ \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /build
-
 COPY requirements.txt .
 
-# Upgrade pip
-RUN pip install --upgrade pip wheel setuptools
+# Обновление pip
+RUN pip install --upgrade pip
 
-# Try to build wheels for our requirements
-RUN pip wheel --no-cache-dir --wheel-dir=/wheels -r requirements.txt
+# Установка проблемных зависимостей отдельно
+RUN pip install --no-cache-dir fastapi==0.89.1 pydantic==1.10.21 dateparser==1.2.1
+RUN pip install --no-cache-dir python-logstash-async==4.0.1 uvicorn==0.32.1 gunicorn==23.0.0
+RUN pip install --no-cache-dir pullenti-wrapper==0.9.0 python-dateutil==2.9.0.post0
+RUN pip install --no-cache-dir spacy==3.8.2 --no-build-isolation
 
-# Second stage - actual application image
-FROM python:3.11-slim
-
-WORKDIR /entities_extractor
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy pre-built wheels
-COPY --from=builder /wheels /wheels
-
-# Install the pre-built wheels
-RUN pip install --no-index --find-links=/wheels /wheels/*
-
-# Download the spacy model
+# Скачивание модели spacy
 RUN python -m spacy download en_core_web_md || \
     (echo "Fallback: direct download" && \
     pip install https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.8.0/en_core_web_md-3.8.0-py3-none-any.whl)
