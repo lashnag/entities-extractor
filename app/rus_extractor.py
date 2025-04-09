@@ -3,6 +3,7 @@ from datetime import datetime
 from pullenti_wrapper.processor import Processor, DATE, MONEY
 from pullenti_wrapper.referent import DateReferent, MoneyReferent, DateRangeReferent
 from dateutil.relativedelta import relativedelta
+from regexp_extractor import extract_money
 
 processor = Processor([DATE, MONEY])
 
@@ -40,7 +41,10 @@ def extract_entities(message):
                 })
 
         elif isinstance(referent, MoneyReferent):
-            sums.append(round(referent.value))
+            sums.append({
+                "amount": round(referent.value),
+                "currency": referent.currency
+            })
         elif isinstance(referent, DateRangeReferent):
             if len(referent.slots) >= 1 and referent.slots[0].value is not None:
                 start_date = referent.slots[0].value
@@ -78,6 +82,9 @@ def extract_entities(message):
                 "first": f"{start_date_str}",
                 "second": f"{end_date_str}"
             })
+
+    if not sums:
+        sums = extract_money(message)
 
     return {
         'dates': dates,
