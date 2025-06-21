@@ -7,12 +7,12 @@ from logstash_async.handler import AsynchronousLogstashHandler
 
 request_headers = contextvars.ContextVar('request_headers')
 
-def is_prod_mode():
-    if os.getenv('PROD_MODE') is not None:
-        logging.getLogger().info("Production mode")
+def is_remote_logger():
+    if os.getenv('REMOTE_LOGGER') is not None:
+        logging.getLogger().info("Remote logger")
         return True
     else:
-        logging.getLogger().info("Developer mode")
+        logging.getLogger().info("Local logger")
         return False
 
 def init_logger():
@@ -20,15 +20,15 @@ def init_logger():
         host='logstash',
         port=5022,
         database_path=None,
-    ) if is_prod_mode() else logging.StreamHandler()
+    ) if is_remote_logger() else logging.StreamHandler()
     handler.setFormatter(JsonFormatter())
     logging.basicConfig(
-        level=logging.INFO if is_prod_mode() else logging.DEBUG,
+        level=logging.INFO if is_remote_logger() else logging.DEBUG,
         datefmt = "%Y-%m-%d %H:%M:%S",
         handlers = [handler]
     )
 
-    logging.getLogger().info(f"Prod mode: {is_prod_mode()}")
+    logging.getLogger().info(f"Prod mode: {is_remote_logger()}")
 
 class JsonFormatter(logging.Formatter):
     def format(self, record):
