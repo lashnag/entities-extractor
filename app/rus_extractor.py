@@ -21,18 +21,18 @@ def extract_entities(message):
             month = referent.month
             year = referent.year
 
-            if day != 0 and month != 0 and year != 0:
+            if day > 0 and month > 0 and year > 0:
                 dates.append(f"{year}-{month:02d}-{day:02d}")
-            elif day != 0 and month != 0:
+            elif day > 0 and month > 0:
                 current_year = datetime.now().year
                 dates.append(f"{current_year}-{month:02d}-{day:02d}")
-            elif month != 0 and year != 0:
+            elif month > 0 and year > 0:
                 last_day = calendar.monthrange(year, month)[1]
                 date_intervals.append({
                     "first": f"{year}-{month:02d}-01",
                     "second": f"{year}-{month:02d}-{last_day}"
                 })
-            elif month != 0:
+            elif month > 0:
                 current_year = datetime.now().year
                 last_day = calendar.monthrange(current_year, month)[1]
                 date_intervals.append({
@@ -52,9 +52,9 @@ def extract_entities(message):
                 start_month = start_date.month
                 start_year = start_date.year
 
-                if start_day != 0 and start_month != 0 and start_year != 0:
+                if start_day > 0 and start_month > 0 and start_year > 0:
                     start_date_str = f"{start_year}-{start_month:02d}-{start_day:02d}"
-                elif start_day != 0 and start_month != 0:
+                elif start_day > 0 and start_month > 0:
                     current_year = datetime.now().year
                     start_date_str = f"{current_year}-{start_month:02d}-{start_day:02d}"
                 else:
@@ -68,9 +68,9 @@ def extract_entities(message):
                 end_month = end_date.month
                 end_year = end_date.year
 
-                if end_day != 0 and end_month != 0 and end_year != 0:
+                if end_day > 0 and end_month > 0 and end_year > 0:
                     end_date_str = f"{end_year}-{end_month:02d}-{end_day:02d}"
-                elif end_day != 0 and end_month != 0:
+                elif end_day > 0 and end_month > 0:
                     current_year = datetime.now().year
                     end_date_str = f"{current_year}-{end_month:02d}-{end_day:02d}"
                 else:
