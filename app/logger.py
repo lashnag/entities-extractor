@@ -1,6 +1,7 @@
 import logging
 import json
 import os
+import sys
 import traceback
 import contextvars
 from logstash_async.handler import AsynchronousLogstashHandler
@@ -20,7 +21,7 @@ def init_logger():
         host='logstash',
         port=5022,
         database_path=None,
-    ) if is_remote_logger() else logging.StreamHandler()
+    ) if is_remote_logger() else logging.StreamHandler(sys.stdout)
     handler.setFormatter(JsonFormatter())
     logging.basicConfig(
         level=logging.INFO if is_remote_logger() else logging.DEBUG,
