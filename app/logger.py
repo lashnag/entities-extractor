@@ -23,14 +23,15 @@ def init_logger():
         database_path=None,
     ) if is_remote_logger() else logging.StreamHandler(sys.stdout)
     handler.setFormatter(JsonFormatter())
+    logging_level = logging.INFO if is_remote_logger() else logging.DEBUG
     logging.basicConfig(
-        level=logging.INFO if is_remote_logger() else logging.DEBUG,
+        level=logging_level,
         datefmt = "%Y-%m-%d %H:%M:%S",
         handlers = [handler]
     )
 
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO if is_remote_logger() else logging.DEBUG)
+    root_logger.setLevel(logging_level)
     root_logger.addHandler(handler)
 
     logging.getLogger().info(f"Prod mode: {is_remote_logger()}")
