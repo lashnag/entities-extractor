@@ -29,6 +29,10 @@ def init_logger():
         handlers = [handler]
     )
 
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO if is_remote_logger() else logging.DEBUG)
+    root_logger.addHandler(handler)
+
     logging.getLogger().info(f"Prod mode: {is_remote_logger()}")
 
 class JsonFormatter(logging.Formatter):
