@@ -27,7 +27,7 @@ async def extract(request: Request):
 
     except Exception as error:
         logging.getLogger().error(f"Common error: {error}", exc_info=True)
-        raise HTTPException(status_code=500, detail="Произошла ошибка при получении обьектов из сообщения")
+        raise HTTPException(status_code=500, detail=f"Error: {error}")
 
 @server.get("/healthcheck")
 async def healthcheck():

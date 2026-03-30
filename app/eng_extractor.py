@@ -27,12 +27,12 @@ def extract_dates(message):
 def load_or_download_model(model_name):
     try:
         nlp = spacy.load(model_name)
-        print(f"Модель {model_name} успешно загружена.")
+        print(f"Model {model_name} loaded successfully.")
     except OSError:
-        print(f"Модель {model_name} не найдена. Скачивание...")
+        print(f"Cant find model {model_name}. Downloading...")
         spacy.cli.download(model_name)
         nlp = spacy.load(model_name)
-        print(f"Модель {model_name} успешно скачана и загружена.")
+        print(f"Model {model_name} downloaded and loaded successfully.")
     return nlp
 
 nlp_en = load_or_download_model("en_core_web_md")
