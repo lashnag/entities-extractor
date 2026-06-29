@@ -1,0 +1,38 @@
+import dateparser
+from regexp_extractor import extract_money
+import spacy
+
+def extract_entities(message):
+    dates = []
+    for string_date in extract_dates(message):
+        parsed_date = dateparser.parse(string_date, languages=['es'])
+        if parsed_date:
+            dates.append(f"{parsed_date.year}-{parsed_date.month:02d}-{parsed_date.day:02d}")
+
+    return {
+        'dates': dates,
+        'moneys': extract_money(message)
+    }
+
+def extract_dates(message):
+    doc = nlp_es(message)
+    date_strings = []
+
+    for entity in doc.ents:
+        if entity.label_ == 'DATE':
+            date_strings.append(entity.text)
+
+    return date_strings
+
+def load_or_download_model(model_name):
+    try:
+        nlp = spacy.load(model_name)
+        print(f"Model {model_name} loaded successfully.")
+    except OSError:
+        print(f"Cant find model {model_name}. Downloading...")
+        spacy.cli.download(model_name)
+        nlp = spacy.load(model_name)
+        print(f"Model {model_name} downloaded and loaded successfully.")
+    return nlp
+
+nlp_es = load_or_download_model("es_core_news_md")

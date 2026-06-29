@@ -4,7 +4,9 @@ def extract_money(text):
     default_currency = "RUB"  # По умолчанию рубли
     currency_hints = {
         "usd": "USD", "$": "USD",
-        "eur": "EUR", "€": "EUR",
+        "eur": "EUR", "€": "EUR", "euro": "EUR", "euros": "EUR",
+        "dólar": "USD", "dólares": "USD", "dolar": "USD", "dolares": "USD",
+        "peso": "MXN",
         "руб": "RUB", "рублей": "RUB", "₽": "RUB", "р": "RUB"
     }
     for word, iso_code in currency_hints.items():
