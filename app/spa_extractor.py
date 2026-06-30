@@ -1,6 +1,6 @@
 import dateparser
+from dateparser.search import search_dates
 from regexp_extractor import extract_money
-import spacy
 
 RANGE_PREPOSITIONS = {'al', 'hasta'}
 
@@ -36,24 +36,12 @@ def extract_entities(message):
     }
 
 def extract_dates(message):
-    doc = nlp_es(message)
-    date_ents = []
-
-    for entity in doc.ents:
-        if entity.label_ == 'DATE':
-            date_ents.append((entity.text, entity.start_char, entity.end_char))
-
-    return date_ents
-
-def load_or_download_model(model_name):
-    try:
-        nlp = spacy.load(model_name)
-        print(f"Model {model_name} loaded successfully.")
-    except OSError:
-        print(f"Cant find model {model_name}. Downloading...")
-        spacy.cli.download(model_name)
-        nlp = spacy.load(model_name)
-        print(f"Model {model_name} downloaded and loaded successfully.")
-    return nlp
-
-nlp_es = load_or_download_model("es_core_news_md")
+    results = search_dates(message, languages=['es']) or []
+    date_entities = []
+    search_from = 0
+    for text, _ in results:
+        pos = message.find(text, search_from)
+        if pos != -1:
+            date_entities.append((text, pos, pos + len(text)))
+            search_from = pos + len(text)
+    return date_entities
