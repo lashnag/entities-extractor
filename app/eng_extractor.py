@@ -1,3 +1,4 @@
+import re
 import dateparser
 from regexp_extractor import extract_money
 import spacy
@@ -12,6 +13,20 @@ def extract_entities(message):
     i = 0
     while i < len(date_entities):
         text, _, end = date_entities[i]
+        prep = next((p for p in RANGE_PREPOSITIONS if re.search(rf'\s{p}\s', text, re.IGNORECASE)), None)
+        # "Flights from June 1 to June 10" - splits to 1 date by space
+        if prep:
+            parts = re.split(rf'\s+{prep}\s+', text, 1, flags=re.IGNORECASE)
+            d1 = dateparser.parse(parts[0], languages=['en'])
+            d2 = dateparser.parse(parts[1], languages=['en'])
+            if d1 and d2:
+                date_intervals.append({
+                    'first': f"{d1.year}-{d1.month:02d}-{d1.day:02d}",
+                    'second': f"{d2.year}-{d2.month:02d}-{d2.day:02d}"
+                })
+                i += 1
+                continue
+        # "Flights starts at 2010-01-01 ends 2010-02-01" - splits to 2 date by spacy
         if i + 1 < len(date_entities):
             next_text, next_start, _ = date_entities[i + 1]
             if message[end:next_start].strip().lower() in RANGE_PREPOSITIONS:
